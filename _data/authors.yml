@@ -59,7 +59,7 @@ isme2n:
     # stumbleupon:     <username>
     # paypal:          <username>
     email:           mailto:twice154@gmail.com
-     rss:             https://twice154.github.io/feed.xml
+    rss:             https://twice154.github.io/feed.xml
 
 # Another author
 mdo:
