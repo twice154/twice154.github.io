@@ -13,7 +13,7 @@ url:                 https://twice154.github.io
 baseurl:             ""
 
 # A very short description of your page
-tagline:             내가 나아가는 발자취
+tagline:             내가 언젠간 나를 뒤돌아볼 수 있는 발자취
 
 # A short description of the page, used in the sidebar and as fallback for the meta description tag.
 # Markdown enabled, but don't use more than one paragraph (enforced by `>`)
@@ -51,7 +51,7 @@ google_analytics:    UA-92346434-1
 disqus_shortname:    isme2n
 
 # This text will appear in the footer of every page. Markdown enabled.
-copyright:           '&copy; 2017. by isme2n'
+copyright:           '&copy; 2018. by twice154'
 
 # Format of the permalinks
 permalink:           pretty
