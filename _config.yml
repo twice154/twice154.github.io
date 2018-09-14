@@ -2,24 +2,24 @@
 #  User configuration
 # -----------------------------------------------------------------------------
 
-title:               Aiden
+title:               twice154
 
 # The unique resource location of your page.
 # Set to `https://<username>.github.io` when hosting on GitHub Pages
-url:                 https://isme2n.github.io
+url:                 https://twice154.github.io
 
 # Set to '' when hosting a blog on GitHub Pages, ie on `//<username>.github.io`
 # Set to '/<reponame>' when using the `gh-pages` branch of a repository
 baseurl:             ""
 
 # A very short description of your page
-tagline:             가장 게으르기위해 가장 부지런한 개발자
+tagline:             내가 나아가는 발자취
 
 # A short description of the page, used in the sidebar and as fallback for the meta description tag.
 # Markdown enabled, but don't use more than one paragraph (enforced by `>`)
 description:         >
-  게으르기 때문에 게발자.
-  글쓰는 걸 좋아하고, 디자인과 개발을 좋아한다.
+  스타트업을 꿈꾸는 대학생.
+  Startup, IT, Business, Design에 주로 관심이 많습니다.
 
 # This should be the same author as first entry in `_data/authors.yml`
 author:
