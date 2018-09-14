@@ -23,11 +23,11 @@ description:         >
 
 # This should be the same author as first entry in `_data/authors.yml`
 author:
-  name:              aiden min
-  email:             zoqozqz@gmail.com
+  name:              namwoo lee
+  email:             twice154@gmail.com
 
 # Fallback image and color
-image:               /assets/img/universe.png
+image:               /assets/img/alone.jpg
 color:               '#4f86aa'
 
 # The font used for headings. Expects a string that is a valid CSS font-family value.
