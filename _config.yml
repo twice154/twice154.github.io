@@ -27,7 +27,7 @@ author:
   email:             zoqozqz@gmail.com
 
 # Fallback image and color
-image:               /assets/img/4.jpg
+image:               /assets/img/universe.png
 color:               '#4f86aa'
 
 # The font used for headings. Expects a string that is a valid CSS font-family value.
