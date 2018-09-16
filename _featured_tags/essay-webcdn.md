@@ -2,7 +2,7 @@
 layout: tag-blog
 title: Webcdn
 slug: webcdn
-category: log
+category: essay
 menu: false
 order: 1
 ---
