@@ -8,7 +8,7 @@ isme2n:
   # Used at the bottom of each page and at the top of the `about` layout
   # Markdown enabled, can use multiple paragraphs (enabled by `|`)
   about:             |
-    스타트업을 꿈꾸는 대학생.
+    최고의 스타트업 만들기를 준비하는 대학생.
     Startup, IT, Business, Design에 주로 관심이 많습니다.
 
   # This photo will be used in the about section
