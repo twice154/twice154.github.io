@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "[2018.09.17] Today's Log"
-subtitle: "Log"
+subtitle: "[2018.09.17] Today's Log"
 categories: log
 tags: log
 comments: true
