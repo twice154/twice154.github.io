@@ -44,7 +44,7 @@ webCDN에 대해서 이게 뭔지 모르시는 분들은 [webCDN에 대한 간�
 WebRTC에서 권장하는 1회 최대 전송량인 16KB를 준수하여 모든 Image파일을 16KB 크기의 Blob 분할합니다.
 코드로 간단하게 표현해보면 아래와 같습니다.
 
-<code>
+```js
 const sliceFile = function(offset) {
     let reader = new window.FileReader()
     reader.onload = (function() {
@@ -69,7 +69,7 @@ const sliceFile = function(offset) {
     reader.readAsArrayBuffer(slice)
 }
 sliceFile(0)
-</code>
+```
 
 ## 새로운 webCDN 아키텍처
 ****
