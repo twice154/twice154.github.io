@@ -51,7 +51,6 @@ const sliceFile = function(offset) {
         return function(e) {
             console.log("Sending image blob : end image false", e.target.result.byteLength)
             sendDataChannelList[pId].send(e.target.result)
-
             if(image.size > offset + e.target.result.byteLength) {
                 window.setTimeout(sliceFile, 0, offset + chunkSize)
             } else {
@@ -66,7 +65,6 @@ const sliceFile = function(offset) {
             }
         }
     })(image)
-
     let slice = image.slice(offset, offset + chunkSize)
     reader.readAsArrayBuffer(slice)
 }
