@@ -1,7 +1,7 @@
 ---
 layout: post
-title: "Peer-to-peer networking with BitTorrent Part1"
-subtitle: "Peer-to-peer networking with BitTorrent Part1"
+title: "[Part1] Peer-to-peer networking with BitTorrent"
+subtitle: "[Part1] Peer-to-peer networking with BitTorrent"
 categories: essay
 tags: webcdn
 comments: true
