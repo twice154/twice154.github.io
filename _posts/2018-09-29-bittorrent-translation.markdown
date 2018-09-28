@@ -17,8 +17,49 @@ BitTorrent 창시자인 Bram Cohen이 발표한 논문 [Incentives Build Robustn
 ****
 1. Pure peer-to-peer
 ![pure-p2p](/assets/img/20180929/pure-p2p.png)
-중앙에서 관리해주는 체계가 없는 P2P 시스템입니다.
+중앙에서 피어를 관리하는 허브가 `전혀 없는` P2P 시스템입니다.
+
+모든 피어들이 동일한 역할을 수행하고, 100% 분산되어 있는 형태로 이루어져 있기 때문에, 피어 몇 개가 이탈한다고 해도 전체 퍼포먼스에 거의 영향을 미치지 않습니다.
+또한, 공격취약점이 없다는 것도 큰 장점입니다.
 
 2. Hybrid peer-to-peer
 ![hybrid-p2p](/assets/img/20180929/hybrid-p2p.png)
-중앙에서 관리를 하는 존재들이 있긴 하지만, 그 관리자들을 최대한 분산시켜 놓은 시스템입니다.
+중앙에서 피어를 관리를 하는 허브가 `있긴 하지만`, 허브들을 최대한 분산시켜 놓은 P2P 시스템입니다.
+
+허브를 아무리 분산시켜 놓았다고 해도, 해당 허브가 작동하지 않을 경우에는 그 하위에 연결되어 있는 피어들이 고립된다는 문제점이 있습니다.
+또한, 허브가 공격취약점이 될 수가 있습니다.
+
+하지만, 중앙 허브들끼리의 통신을 통해서 데이터를 빠르게 주고받을 수 있기 때문에, Pure P2P 보다 속도 측면에서는 장점이 있습니다.
+
+## BitTorrent Architecture
+****
+BitTorrent 아키텍처는 크게 4 부분으로 구성되어 있습니다.
+> - Torrent File : filename, size, hashing information, URL 등의 `메타데이터`를 포함합니다. 실제 BitTorrent Client로 열게 되는 파일입니다.
+> - Tracker : 피어들의 다운로드 상태를 기록하고, 피어들을 찾아주는 `시그널링 서버`와 같은 역할을 합니다.
+> - Seed : 파일의 전체를 모두 가지고 있는, 다운로드를 마친 피어를 의미합니다.
+> - Leecher : 파일의 일부분을 가지고 있는, 다운로드 중인 피어를 의미합니다.
+
+기본적으로 진행되는 다운로딩 프로세스는
+> - 새로 접속한 유저가 Tracker에게 다운로드 받으려는 파일, 그리고 자신이 연결 가능한 포트 등의 정보를 전송합니다.
+> - Tracker는 위 요청에 대한 응답으로 동일한 파일을 다운로드 중인 피어들의 목록과, 그들에게 연결할 수 있는 방법에 대한 정보를 전송합니다. 이렇게 해서 묶이게 되는 피어 집단을 Swarm이라고 부릅니다.
+> - P2P로 전송될 파일은 512KB 혹은 256KB 조각으로 분할되며, SHA-1 암호화를 통해 해싱됩니다. 해싱은 다운로드 이후에 Torrent File의 hashing information과 대조하여 조각이 깨졌다던지, 악성 코드 삽입 유무 등을 판별하는데 사용됩니다.
+> - 조각이 다운로드 이후 검증이 완료되면, 피어는 Swarm내의 다른 피어들에게 해당 조각 업로드가 가능함을 알립니다.
+
+__실제로 용량이 큰 데이터는 P2P로 전송이 이루어지고 Tracker는 그 사이에서 시그널링 작업만을 행하기 때문에, Tracker는 높은 컴퓨팅 파워를 필요로 하지 않습니다.__
+
+## Piece Selection Algorithm
+****
+
+
+## Resource Allocation Algorithm
+****
+
+## ○ 참고문서
+****
+#### 기존의 webCDN 아키텍처
+* [Using WebRTC data channels](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels#Understanding_message_size_limits)
+
+#### 새로운 webCDN 아키텍처
+* [BitTorrent](https://en.m.wikipedia.org/wiki/BitTorrent)
+* [The World of P2P: BitTorrent Protocols and Software](https://en.wikibooks.org/wiki/The_World_of_Peer-to-Peer_(P2P)/Networks_and_Protocols/BitTorrent)
+* [Peer-to-peer networking with BitTorrent](http://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf)
