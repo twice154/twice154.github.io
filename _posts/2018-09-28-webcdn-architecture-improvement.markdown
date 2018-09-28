@@ -68,10 +68,10 @@ sliceFile(0)
 저 수치는 다운로드 속도 기준이니깐, 업로드 속도는 보통 다운로드 속도의 30% 정도로 망사업자들이 제약을 건다고 하네요.
 실제로 네트워크 속도 측정을 해봐도 이와 비슷한 결과가 나옵니다.
 
-따라서 최소 업로드 속도를 3Mb/s => 375KB/s 에 무선 라우터가 추가되었을 때 업로드 속도가 대략 50% 감소한다고 가정하여 약 190KB/s 로 잡았습니다.
+따라서 최소 업로드 속도를 3Mb/s => 375KB/s 에 무선 라우터가 추가되었을 때 업로드 속도가 대략 50% 감소한다고 가정하여 약 `190KB/s` 로 잡았습니다.
 아까 16KB 단위로 분할한 이미지 Blob을 초당 10개씩 전송할 수 있겠네요.
 
-그렇다면 이제 피어 하나가 저정도 업로드 속도를 가지고 있을때, 기존의 CDN에서 이미지를 받아오는 속도랑 동일한 퍼포먼스를 내려면 몇 명의 피어가 동시에 전송을 해줘야 할지 알아봐야죠.
+그렇다면 이제 피어 하나가 저정도 업로드 속도를 가지고 있을때, 기존의 CDN에서 이미지를 받아오는 속도랑 동일한 퍼포먼스를 내려면 `몇 명의 피어가` 동시에 전송을 해줘야 할지 알아봐야죠.
 
 ![naver-network](/assets/img/20180928/naver-network.png)
 > [네이버 메인페이지 입니다.](www.naver.com)
@@ -79,10 +79,40 @@ sliceFile(0)
 ![hsinven-network](/assets/img/20180928/hsinven-network.png)
 > [하스스톤 인벤 이라는 커뮤니티 사이트의 게시글 입니다.](http://www.inven.co.kr/board/webzine/2097/1070483?iskin=hs)
 
-네이버 메인페이지의 경우 계산을 해보면 약 870KB/s 의 속도로 다운로드를 진행했음을 알 수 있고, 하스스톤 인벤 게시글의 경우 약 5900KB/s 의 속도로 다운로드를 진행했음을 알 수 있습니다.
+네이버 메인페이지의 경우 계산을 해보면 약 `870KB/s` 의 속도로 다운로드를 진행했음을 알 수 있고, 하스스톤 인벤 게시글의 경우 약 `5900KB/s` 의 속도로 다운로드를 진행했음을 알 수 있습니다.
 네이버의 경우보다 작은 커뮤니티 사이트가 다운로드 속도로 훨씬 큰 것은 아마도 네이버 메인페이지의 용량이 작기 때문에, 2.76s 미만으로 줄이는 것이 큰 의미가 없어 더 이상 Bandwidth를 할당하지 않았기 때문이 아닐까 싶습니다.
 
-위의 결과를 통해 추측해 보았을 때, 용량이 작은 페이지의 경우에는 약 5명의 동시 전송 피어로 충분하고, 용량이 큰 페이지의 경우에는 약 30명의 동시 전송 피어가 필요하다는 것을 알 수 있습니다.
+위의 결과를 통해 추측해 보았을 때, 용량이 작은 페이지의 경우에는 `약 5명의 동시 전송 피어`로 충분하고, 용량이 큰 페이지의 경우에는 `약 30명의 동시 전송 피어`가 필요하다는 것을 알 수 있습니다.
+
+여기서 저의 아키텍처 설계의 실수가 있었습니다.
+
+```js
+{
+    url1 : {
+        fghuirwhg343g324g34 : {
+            socketId : fghuirwhg343g324g34,
+            downloaded : true,
+            numOfCurrentUploadPeers : 1
+        },
+        f489hf3247g2hg8gw34f : {
+            socketId : f489hf3247g2hg8gw34f,
+            downloaded : false,
+            numOfCurrentUploadPeers : 2
+        },
+        ...
+    },
+    url2 : {
+    },
+    ...
+}
+```
+
+저는 피어를 매칭해주는 시그널링 서버에서 위와 같은 형태로 피어들을 저장해서 다운로드가 완료된 피어와 완료되지 않은 피어를 구분했습니다.
+`다운로드가 완료된 피어(업로더)`는 다른 피어들에게 전송을 해줄 수 있고, `다운로드중인 피어(다운로더)`는 그냥 계속 다운로드만 합니다.
+
+제가 이런 다운로더와 업로더를 명확하게 구분해 놓은 이유는 다음과 같습니다.
+> - UX에 영향을 미치지 않기 위해서는 무조건 Top-down 형식으로 다운로드를 진행해야 한다. (화면 상단에 위치한 녀석일수록 먼저 다운로드 해야한다.)
+> - 그런 경우에는 다운로더가 동시에 업로더의 역할까지 수행할 경우, 많은 중복이 발생할 수 있다. 예를 들자면, 나에게 전송을 해주는 다수의 업로더들의 다운로딩 상태가 나와 동일할 수 있다. 그럴 경우에 이 업로더들은 없는 업로더와 동일하게 취급되고, 다운로더의 다운로딩 속도가 저하될 수 밖에 없다.
 
 ## 새로운 webCDN 아키텍처
 ****
@@ -92,3 +122,7 @@ sliceFile(0)
 ****
 #### 기존의 webCDN 아키텍처
 * [Using WebRTC data channels](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels#Understanding_message_size_limits)
+## 새로운 webCDN 아키텍처
+* [BitTorrent](https://en.m.wikipedia.org/wiki/BitTorrent)
+* [The World of P2P: BitTorrent Protocols and Software](https://en.wikibooks.org/wiki/The_World_of_Peer-to-Peer_(P2P)/Networks_and_Protocols/BitTorrent)
+* [Peer-to-peer networking with BitTorrent](http://web.cs.ucla.edu/classes/cs217/05BitTorrent.pdf)
