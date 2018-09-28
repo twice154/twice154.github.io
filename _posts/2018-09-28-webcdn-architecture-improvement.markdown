@@ -155,6 +155,7 @@ sliceFile(0)
 ****
 #### 기존의 webCDN 아키텍처
 * [Using WebRTC data channels](https://developer.mozilla.org/en-US/docs/Web/API/WebRTC_API/Using_data_channels#Understanding_message_size_limits)
+
 #### 새로운 webCDN 아키텍처
 * [BitTorrent](https://en.m.wikipedia.org/wiki/BitTorrent)
 * [The World of P2P: BitTorrent Protocols and Software](https://en.wikibooks.org/wiki/The_World_of_Peer-to-Peer_(P2P)/Networks_and_Protocols/BitTorrent)
