@@ -42,26 +42,16 @@ webCDN에 대해서 이게 뭔지 모르시는 분들은 [webCDN에 대한 간�
 1. Connection 연결의 오버헤드를 줄이기 위하여 최소 연결 피어 수를 정한다.
 
 WebRTC에서 권장하는 1회 최대 전송량인 16KB를 준수하여 모든 Image파일을 16KB 크기의 Blob 분할합니다.
-코드로 간단하게 표현해보면 아래와 같습니다.
+코드로 간단하게 표현해보면 아래와 같이 Recursive하게 호출해서 Blob을 만들게 되죠.
 
 ```js
 const sliceFile = function(offset) {
     let reader = new window.FileReader()
     reader.onload = (function() {
         return function(e) {
-            console.log("Sending image blob : end image false", e.target.result.byteLength)
-            sendDataChannelList[pId].send(e.target.result)
             if(image.size > offset + e.target.result.byteLength) {
+                // chunkSize가 16KB입니다.
                 window.setTimeout(sliceFile, 0, offset + chunkSize)
-            } else {
-                // image blob을 쪼개서 다 보낸 후, 다 전송되었다고 알리는 flag
-                if(JSON.parse(event.data).num === imageBlobList.length - 1) {
-                    console.log("Sending flag : end all image true", e.target.result.byteLength)
-                    sendDataChannelList[pId].send("allImageDownloadEnded")
-                } else {
-                    console.log("Sending flag : end image true", e.target.result.byteLength)
-                    sendDataChannelList[pId].send("thisImageDownloadEnded")
-                }
             }
         }
     })(image)
@@ -70,6 +60,29 @@ const sliceFile = function(offset) {
 }
 sliceFile(0)
 ```
+
+그 후에 요즘 우리나라 이통사들의 인터넷 요금제를 찾아봤습니다.
+
+10Mb/s, 50Mb/s, 100Mb/s 세 개 정도가 대부분이더군요.
+
+저 수치는 다운로드 속도 기준이니깐, 업로드 속도는 보통 다운로드 속도의 30% 정도로 망사업자들이 제약을 건다고 하네요.
+실제로 네트워크 속도 측정을 해봐도 이와 비슷한 결과가 나옵니다.
+
+따라서 최소 업로드 속도를 3Mb/s => 375KB/s 에 무선 라우터가 추가되었을 때 업로드 속도가 대략 50% 감소한다고 가정하여 약 190KB/s 로 잡았습니다.
+아까 16KB 단위로 분할한 이미지 Blob을 초당 10개씩 전송할 수 있겠네요.
+
+그렇다면 이제 피어 하나가 저정도 업로드 속도를 가지고 있을때, 기존의 CDN에서 이미지를 받아오는 속도랑 동일한 퍼포먼스를 내려면 몇 명의 피어가 동시에 전송을 해줘야 할지 알아봐야죠.
+
+![naver-network](/assets/img/20180928/naver-network.png)
+> [네이버 메인페이지 입니다.](www.naver.com)
+
+![hsinven-network](/assets/img/20180928/hsinven-network.png)
+> [하스스톤 인벤 이라는 커뮤니티 사이트의 게시글 입니다.](http://www.inven.co.kr/board/webzine/2097/1070483?iskin=hs)
+
+네이버 메인페이지의 경우 계산을 해보면 약 870KB/s 의 속도로 다운로드를 진행했음을 알 수 있고, 하스스톤 인벤 게시글의 경우 약 5900KB/s 의 속도로 다운로드를 진행했음을 알 수 있습니다.
+네이버의 경우보다 작은 커뮤니티 사이트가 다운로드 속도로 훨씬 큰 것은 아마도 네이버 메인페이지의 용량이 작기 때문에, 2.76s 미만으로 줄이는 것이 큰 의미가 없어 더 이상 Bandwidth를 할당하지 않았기 때문이 아닐까 싶습니다.
+
+위의 결과를 통해 추측해 보았을 때, 용량이 작은 페이지의 경우에는 약 5명의 동시 전송 피어로 충분하고, 용량이 큰 페이지의 경우에는 약 30명의 동시 전송 피어가 필요하다는 것을 알 수 있습니다.
 
 ## 새로운 webCDN 아키텍처
 ****
