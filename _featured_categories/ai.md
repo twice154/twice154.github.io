@@ -1,7 +1,7 @@
 ---
 layout: list
-title: Artificial Intelligence
-slug: artificial intelligence
+title: AI
+slug: ai
 menu: true
 submenu: true
 order: 1
