@@ -2,7 +2,7 @@
 layout: post
 title: "Playing Atari with Deep Reinforcement Learning"
 subtitle: "Playing Atari with Deep Reinforcement Learning"
-categories: papers
-tags: papers
+categories: paper
+tags: paper
 comments: true
 ---

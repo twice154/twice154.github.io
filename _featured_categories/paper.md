@@ -1,7 +1,7 @@
 ---
 layout: list
-title: Papers
-slug: papers
+title: Paper
+slug: paper
 menu: true
 submenu: false
 order: 1
