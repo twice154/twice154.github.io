@@ -18,8 +18,8 @@ tagline:             내가 나를 뒤돌아보고, 다른 사람들에게 도�
 # A short description of the page, used in the sidebar and as fallback for the meta description tag.
 # Markdown enabled, but don't use more than one paragraph (enforced by `>`)
 description:         >
-  최고의 스타트업 만들기를 준비하는 대학생.
-  Startup, IT, Business, Design에 주로 관심이 많습니다.
+  최고의 스타트업을 위해 준비하는 학생.
+  IT, StartUp, Business, Design에 관심이 아주 많습니다.
 
 # This should be the same author as first entry in `_data/authors.yml`
 author:
