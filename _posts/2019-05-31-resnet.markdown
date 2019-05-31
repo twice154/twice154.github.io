@@ -30,3 +30,68 @@ ResNet 논문은 Deep Learning 분야에서 연구를 하는 사람들이라면 
 저자들은 이처럼 Depth가 깊어짐에 따라서 Accuracy가 Saturated되고, 그 위에 추가적인 Layer를 쌓을수록 Accuracy가 감소하는 문제를 `Degradation`이라고 부릅니다.
 `Degradation`은 Overfitting과는 분명하게 다른 문제인데, Overfitting은 Network가 Training Set에 대해서 과도한 Feature Representation을 학습하여 Generlization 능력이 떨어지기 때문에 발생하는 문제로, Training Set에 대해서는 Error가 더 낮아야 합니다.
 하지만 `Degradation`은 Training Set에 대해서 조차 Error가 더 높게 발생하는 문제임을 위의 그림에서 확인할 수 있습니다.
+
+저자들은 이 문제가 Network가 깊어지면 [Vanishing Gradient](https://brunch.co.kr/@chris-song/39) 가 크게 영향을 주어 발생하는 것이 아닐까 라고 추정합니다.
+
+
+## Residual Block
+****
+여기에서 저자들은 하나의 솔루션을 던집니다.
+
+`There exists a solution by construction to the deeper model: the added layers are identity mapping, and the other layers are copied from the learned shallower model.`
+
+Identity Mapping을 하는 Layer를 쌓아나간다면 Performance가 더 나빠지지는 않을 것이라는 생각입니다.
+조금만 생각을 해보면 당연하다고 여겨질 수 있는 부분인데, Identity Mapping을 하는 Layer를 쌓으면 그냥 아무일도 하지 않는 Layer가 하나 추가되는 것이기 때문에 적어도 Accuracy가 떨어지지는 않을 겁니다.
+이러한 아이디어를 바탕으로 저자들은 아래의 그림과 같은 Residual Block을 제공합니다.
+
+![residual block](/assets/img/20190531/res-block.png)
+
+위의 Block은 두 개의 Pathway로 이루어져 있습니다.
+> - Weight Matrix를 통과하는 일반적인 Pathway
+> - Identity Pathway
+그리고 이 두 개의 Pathway는 이후에 단순하게 Summation 과정을 거칩니다.
+
+Residual의 의미는 이 Block의 구조를 살펴보면 이해할 수 있는데요.
+Identity Mapping에 의해서 Block의 Input은 Block의 Output 부분에서 그대로 더해지게 됩니다.
+따라서 Weight Matrix를 통과해서 학습하는 값은 Output에서 `Residual`한 정보를 학습하는 것이라고 해석할 수 있습니다.
+
+이 Identity Mapping은 Vanishing Gradient문제를 해결해 줍니다.
+단순한 Summation만 이루어지기 때문에 Back-Propagation의 Gradient가 1이 되고, 이는 Output에서 Input에 가장 가까운 Layer까지 Loss가 0이 되어버리지 않고 Back-Propagate 가능하도록 만들어 줍니다.
+또한 단순 Identity이기 때문에 추가적인 Parameter라던지, Computation Cost도 없습니다.
+
+정말로 그냥 개인적인 생각 1
+> - Identity Mapping을 통해서 정말 단순하게 Input을 Output에 Summation하는 연산도 Back-Propagation이 가능하다. 이는 [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/) 에서 충분하게 설명되어 있습니다.
+> - 단순 Summation이 아니라, Channel Concatenation또한 Back-Propagation이 가능하다. 이는 아마 단순 Channel Concatenation 작업은 각각의 Channel을 얻어내기 위한 Computation Graph가 독립적으로 이미 존재하기 때문에 가능하지 않은가 싶습니다.
+
+## EXPERIMENTS
+****
+ResNet은 실제로 Layer Stacking에 있어서 유의미한 결과를 보여줍니다.
+
+![resnet result](/assets/img/20190531/resnet-result.png)
+
+## IDENTITY VS PROJECTION SHORTCUTS & BOTTLENECK
+****
+ResNet 팀은 단순 Identity Connection과 1x1 Convolution을 이용하여 Projection을 추가한 Architecture중 어떤 것이 더 좋은 성능을 나타낼까에 대한 연구를 진행했습니다.
+ResNet 팀이 실험을 진행한 케이스는 아래의 세 가지 입니다.
+* Increasing Dimension에 대하여 단순히 Zero-Padding을 적용
+* Increasing Dimension에 대해서만 Projection 적용
+* 모든 Dimension에 대하여 Projection 적용
+결과는 아래와 같습니다.
+
+![resnet projection](/assets/img/20190531/resnet-projection.png)
+
+A의 성능이 가장 안좋은 것은 Zero-Padding은 Learning을 통해서 이루어지는 것이 아니라, 단순히 빈 칸을 채우는 방식이기 때문이고, B와 C의 성능은 매우 작은 차이를 보입니다.
+C에서 발생하는 추가적인 Parameter를 고려해 보았을 때, 가능하면 Identity한 Shortcut을 유지하는 것이 효율적이라고 저자는 말합니다.
+
+또한 Layer가 깊어질수록 연산량이 매우 많아지기 때문에, 1x1 Convolution을 이용하여 Dimension을 축소한 상태에서 3x3 Convolution을 적용하고, 다시 1x1 Convolution을 통해 Dimension을 복구하는 Bottleneck Architecture를 소개합니다.
+아래의 그림을 통해 명확하게 이해할 수 있습니다.
+
+![bottleneck](/assets/img/20190531/bottleneck.png)
+
+## ○ 참고문서
+****
+* [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385/)
+* [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/)
+* [Residual Networks Behave Like Ensembles of Relatively Shallow Networks](https://arxiv.org/abs/1605.06431/)
+* [Vanishing Gradient Problem](https://brunch.co.kr/@chris-song/39)
+* Toppics in Embedded Systems, Seoul National University, Prof. Sungjoo Yoo
