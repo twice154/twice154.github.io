@@ -1,0 +1,21 @@
+---
+layout: post
+title: "Deep Residual Learning for Image Recognition에 대한 지극히 개인적인 이해"
+subtitle: "Deep Residual Learning for Image Recognition에 대한 지극히 개인적인 이해"
+categories: paper
+tags: paper
+comments: true
+---
+
+처음 퍼블리싱 된지 5년이 다되어가는 지금까지도 Computer Vision 분야에서 Deep한 네트워크를 구성하기 위해서 기본적인 Building Block으로 사용하는 [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385/) 에 대하여 간단하게 리뷰하도록 하겠습니다. Residual Architecture의 최초 논문인 해당 논문과 더불어서 Residual Architecture에 대한 나름대로의 해석을 포함한 [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/), [Residual Networks Behave Like Ensembles of Relatively Shallow Networks](https://arxiv.org/abs/1605.06431/) 이 두 개 논문에 대한 포스팅도 블로그에 올라와있으니, 같이 참고해주시면 Residual Architecture에 대하여 더욱 깊은 이해에 도움이 되실 것이라고 생각합니다.
+
+## Degradation
+****
+ResNet 논문은 Deep Learning 분야에서 연구를 하는 사람들이라면 당연하게 떠오를 만한 질문에서 시작을 합니다.
+
+`Layer를 단순하게 Stacking 함으로써 Better Learning을 얻을 수 있는가?`
+
+아래 그림은 ILSVRC에서 1등 수상팀이 구현한 Neural Network의 Depth를 보여주는 그림 입니다.
+
+![revolution of depth](/assets/img/20190531/revolution-of-depth.png)
+> ResNet이 등장하면서 Neural Network의 Depth가 급격하게 증가하게 됩니다.

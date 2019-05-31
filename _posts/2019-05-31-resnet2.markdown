@@ -1,0 +1,8 @@
+---
+layout: post
+title: "Identity Mappings in Deep Residual Networks에 대한 지극히 개인적인 이해"
+subtitle: "Identity Mappings in Deep Residual Networks에 대한 지극히 개인적인 이해"
+categories: paper
+tags: paper
+comments: true
+---
