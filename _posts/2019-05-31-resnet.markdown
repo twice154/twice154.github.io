@@ -59,7 +59,7 @@ Identity Mapping에 의해서 Block의 Input은 Block의 Output 부분에서 그
 단순한 Summation만 이루어지기 때문에 Back-Propagation의 Gradient가 1이 되고, 이는 Output에서 Input에 가장 가까운 Layer까지 Loss가 0이 되어버리지 않고 Back-Propagate 가능하도록 만들어 줍니다.
 또한 단순 Identity이기 때문에 추가적인 Parameter라던지, Computation Cost도 없습니다.
 
-정말로 그냥 개인적인 생각 1
+정말로 그냥 개인적인 생각
 > - Identity Mapping을 통해서 정말 단순하게 Input을 Output에 Summation하는 연산도 Back-Propagation이 가능하다. 이는 [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/) 에서 충분하게 설명되어 있습니다.
 > - 단순 Summation이 아니라, Channel Concatenation또한 Back-Propagation이 가능하다. 이는 아마 단순 Channel Concatenation 작업은 각각의 Channel을 얻어내기 위한 Computation Graph가 독립적으로 이미 존재하기 때문에 가능하지 않은가 싶습니다.
 

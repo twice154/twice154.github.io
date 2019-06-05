@@ -6,3 +6,73 @@ categories: paper
 tags: paper
 comments: true
 ---
+
+[ResNet](https://arxiv.org/abs/1512.03385/)의 제 1저자인 Kaiming He가 Identity Mapping에 대한 추가적인 해석을 담은 [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/)라는 논문을 발표했습니다.
+이 논문에서는 Residual Networks에 대한 해석과 더불어서 가장 성능이 좋고 효과적인 Residual Block의 형태 또한 제안합니다.
+
+## BRIEF REVIEW OF RESIDUAL NETWORKS
+****
+Residual Block의 Equation은 다음과 같습니다.
+
+![residual equation](/assets/img/20190531/residual-eqn.png)
+> 해당 Equation Form을 기본으로 두고 h, F, f 함수를 바꿔가며 논문의 실험이 진행됩니다.
+
+가장 기본이 되는 Residual Block의 Setting은 h가 Identity Mapping이고, f가 ReLU 입니다.
+논문에서 h를 Identity에서 Scaling, Gating, 1x1 Convolution 등으로 바꾸어 실험을 해보지만, 모두 더 높은 Training Loss와 Error를 발생시킨다고 말합니다.
+이는 Shortcut Path가 `Information Flow`의 역할을 하고, 그렇기 때문에 Path를 Clean하게 유지하는 것이 Information Flow에 도움을 더 주는 것이라고 말합니다.
+
+## ANALYSIS OF DEEP RESIDUAL NETWORKS
+****
+위에서 언급한 Residual Block Equation에서
+> - h는 Identity Mapping
+> - F는 Weight Forward
+> - f는 Identity Mapping
+이라고 생각해 봅시다.
+
+그렇다면 Residual Block의 Feed Forward 관계는 다음과 같습니다.
+
+![residual identity equation](/assets/img/20190531/residual-eqn-identity.png)
+
+Layer가 아무리 깊어진다 해도 Input + Residual Summation된 값으로 구성됩니다.
+일반적인 Stacking Layer의 구조에서는 이런 Summation의 형태가 아니라, Weight Matrix의 연속적인 곱으로 Output이 표현됩니다.
+
+Residual Block의 Back Propagation 수식은 다음과 같습니다.
+
+![residual backflow equation](/assets/img/20190531/residual-eqn-backflow.png)
+
+가장 첫번째 term인 dE/dxL로 미루어보아, 어떤 Layer 까지던간에 `Error가 직접적으로 흐르는 것`을 확인할 수 있습니다.
+
+## VARIOUS TYPES OF SKIP CONNECTIONS
+****
+ResNet 연구팀은 다양한 형태의 Skip Connection의 성능에 대한 연구를 진행하였습니다.
+
+![residual skip figure](/assets/img/20190531/residual-skip-figure.png)
+
+![residual skip result](/assets/img/20190531/residual-skip-result.png)
+> Original Identity Connection이 성능이 가장 좋습니다..!
+
+Identity를 제외한 다양한 형태의 Skip Connection이 Information Hampering을 발생시켜서 Clean하게 Information이 전달되는 Identity Connection에 비해서 Optimization 부분에 있어 어려움을 겪는다는 것이 저자들의 해석입니다.
+또한, 1x1 Convolution Connection이 Error가 더 높은 것에 대해서는 `Degradation Problem`이 Representational Ability가 부족해서 생기는 문제가 아닌, Optimization이 어려워서 생기는 문제라고 설명할 수 있습니다.
+
+정말로 그냥 개인적인 생각
+> - 논문을 읽을 때 결과 표가 알아보기 어려운 표현 등으로 많이 이루어져 있는 경향이 있어서 굵은 글씨만 스윽 훑어보고 넘어가는 경우가 많은데, 이런 결과 표를 꼼꼼하게 체크하다 보면 추가적으로 생각할 요소들을 많이 찾을 수 있는 것 같습니다.
+
+## VARIOUS TYPES OF ACTIVATION FORMS
+****
+ResNet 연구팀은 다양한 형태의 Activation의 성능에 대한 연구를 진행하였습니다.
+
+![residual activation](/assets/img/20190531/residual-activation.png)
+> Pre-activation의 성능이 가장 좋습니다..!
+
+단순히 Layer Stacking으로 만든 Architecture에서는 Activation의 순서가 사실상 크게 상관이 없지만, Residual Block 처럼 Branch Path가 있을 경우에는 Activation의 순서가 영향을 미칩니다.
+Shortcut이 Activation을 통과 하느냐 안하느냐에 따라서 Backflow 계산이 달라지기도 하고, 마지막에 통과하는 Activation의 형태에 따라서 Shortcut이 어떠한 Value를 가지고 흐르는지가 결정되기 때문에 Activation의 순서에 더욱 민감해지게 됩니다.
+
+저자는 Pre-activation의 성능이 가장 좋은 이유를 두 가지로 꼽습니다.
+> - f가 Identity Mapping으로 작동하기 때문에, Addition이후에 f를 통과하는 다른 Architecture보다 Optimization이 훨씬 뛰어나다.
+> - Pre-activation으로 Batch-norm을 사용하면 Regularization이 향상된다. 이는 우리가 일반적으로 Batch-norm을 사용하는 이유인, Covariance Shift를 줄이기 위해서 다음 Layer에 값을 전달하기 전에 사용하는 것과 동일하지만 Identity Mapping이 일어나기 때문에, Identity Mapping이 일어난 직후 Weight에 들어가기 직전에 Batch-norm을 사용하는 것이 꽤나 유의미한 결과를 도출했다고 생각한다.
+
+## ○ 참고문서
+****
+* [Deep Residual Learning for Image Recognition](https://arxiv.org/abs/1512.03385/)
+* [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027/)
+* Toppics in Embedded Systems, Seoul National University, Prof. Sungjoo Yoo
